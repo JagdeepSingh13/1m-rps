@@ -5,12 +5,12 @@ module.exports = {
       // F indicates the framework to use, Options are: cpeak, express, fastify
       name: process.env.F || "cpeak",
       script: `./${process.env.F || "cpeak"}.js`,
-      instances: "max",
+      instances: "4",
       exec_mode: "cluster",
       env: {
         NODE_ENV: "production",
         REDIS_CLUSTER: "false", // Set to "true" to enable Redis Cluster, otherwise it will use a single Redis instance
-        PG_CONNECT: "true", // Set to "true" to enable PostgreSQL connection
+        PG_CONNECT: "false", // Set to "true" to enable PostgreSQL connection
       },
     },
   ],

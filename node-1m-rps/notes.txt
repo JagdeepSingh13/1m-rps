@@ -1,1 +1,16 @@
 1. autocannon to simulate large number of requests
+2. autocannon -m GET --connections 20 --duration 20 --pipelining 2 --workers 6 "http://localhost:3001/simple"
+    -w for number of threads
+    -p for number of requests one after another
+    -c number of connections we want to make to the server
+    c * p gives num requests handled concurrently by the server
+
+3. we have 3 frameworks express, fastify, cpeak and we test them
+    we get results cpeak ~ fastify >>> express
+    so, we will be using cpeak as its code is also simpler to understand
+
+4. autocannon -m PATCH --connections 5 --duration 20 --pipelining 2 --workers 1 -H "Content-Type: application/json" -b '{"foo1":"test","foo2":"test","foo3":"test","foo4":"test","foo5":"test","foo6":"test","foo7":"test","foo8":"test","foo9":"test","foo10":"test"}' "http://localhost:3000/update-something/123/john_doe?value1=abc&value2=xyz"
+    request to simulate some data and work being done
+
+5. running cpeak appln in cluster mode using pm2 ecosystem.config
+    run --> npx pm2 start .\ecosystem.config.cjs
