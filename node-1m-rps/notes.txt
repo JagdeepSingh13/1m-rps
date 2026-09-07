@@ -14,3 +14,32 @@
 
 5. running cpeak appln in cluster mode using pm2 ecosystem.config
     run --> npx pm2 start .\ecosystem.config.cjs
+
+6. if we launch 2 huge machines in AWS for server and tester (128 cores, 256 GB mem.)
+    then the /simple route handles millions of reqs.
+    but, other route gets limited by network performance (about 6-7 GB/s)
+
+7. the /code req. write a simple INSERT to a DB
+    but, we get very low avg. reqs. /sec in AWS  (50K rps)
+    due to limitation by DB 
+    as, we make connections to the DB from our machine, which are limited
+    also IOPS are also limited (about 3-12k), also expensive
+
+8. we inserted 10M records  to PG, 
+    the /code-v1 does a simple read (SELECT) from the DB 
+    the, ORDER BY RANDOM() does whole table scan O(n) takes very long, if millions of records
+
+    same with v2 as count(*) is O(n)
+    v3 and v4 give results as they are lighter DB queries (still not 1M rps)
+
+9. info: RAM r/w is 10x than disk, and access time is 1000x of disk
+    PG uses disk so, is slow for so many reqs.
+
+10. Using Redis (in-memory DB)
+    in /code-fast we save 1st to redis then gradually to PG using sync.js 
+    but gives about 150k rps as single redis instance is limited
+
+    the get method on redis gives about 300k rps (comparable to PG but cheaper)
+
+11. 11M records in PG takes about 16G 
+    in migrate.js we move all data from PG to redis (AWS machine RAM is about 250G)
