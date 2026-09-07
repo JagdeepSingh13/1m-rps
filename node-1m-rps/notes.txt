@@ -37,9 +37,21 @@
 
 10. Using Redis (in-memory DB)
     in /code-fast we save 1st to redis then gradually to PG using sync.js 
-    but gives about 150k rps as single redis instance is limited
+    but gives about 150k rps as single redis instance is limited (100-200k as it is single threaded)
 
     the get method on redis gives about 300k rps (comparable to PG but cheaper)
 
 11. 11M records in PG takes about 16G 
     in migrate.js we move all data from PG to redis (AWS machine RAM is about 250G)
+
+
+Redis Clustering:
+./redis.sh to run many clusters of redis 
+
+11. in /code-ultra-fast we generate a random UUID as getting from redis takes some time 
+    to gen. a duplicate UUID at 1M rps it would take 86,000 years
+    we hash id such that it always goes to same redis node
+
+    this post req. managed to get above 1M rps on AWS machine
+    but memory usage is also very fast
+    can do batch write to PG or to disk
